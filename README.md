@@ -18,7 +18,9 @@
 6. Заполнить справочники и таблицу вакансий в Core слое DWH, с сохранением обновленных записей в таблицу истории.
 7. Оркестрация процесса через Prefect.
 8. Сделать View и материализацию таблиц в DataMart слое DWH
-9. По данным из DataMart построить дашборды в Yandex Data Lens и Power BI
+9. По данным из DataMart построить дашборды в Yandex Data Lens и Power BI  
+
+![Схема работы программы](file/DWH.png)
 
 
 ### План DWH
@@ -32,10 +34,39 @@ stage_pars_hh_skill это навыки указанные в вакансии. 
 ![Stage](/file/stage.png)
 
 
-Таблицы слоя Core и схема переноса данных:
+Таблицы слоя Core и схема переноса старых данных:
 Таблицы и связи между ними изображены на схеме. Справа на схеме логика работы с 
 устаревшими записями. Зеленым выделено то что реализовано в данный момент. В 
 будущем планируется реализация третьего варианта работы с устаревшими записями.
+Все процедуры по переносу данных присутствуют в папке func_core.
+Запускаются они в ETL следующим кодом:
+```
+def update_core():
+    # Обновление столбца статуса
+    sqlt_stmt = "select core.add_status();"
+    execute_stmt(sqlt_stmt)
+
+    # Обновление справочников
+    sqlt_stmt = "select core.update_core_ref();"
+    execute_stmt(sqlt_stmt)
+
+    # Добавление новых записей
+    sqlt_stmt = "SELECT core.add_fact_vacancy_0();"
+    execute_stmt(sqlt_stmt)
+
+    # Перенос записей в историю и удаление перенесенных вакансий
+    sqlt_stmt = "SELECT core.update_fact_history();"
+    execute_stmt(sqlt_stmt)
+
+    # Обновление записей
+    sqlt_stmt = "SELECT core.add_fact_vacancy_2();"
+    execute_stmt(sqlt_stmt)
+
+    # Обновление таблицы мапинга скилы-вакансии
+    sqlt_stmt = "select core.add_skill_vacancy_map();"
+    execute_stmt(sqlt_stmt)
+```
+
 ![Core](/file/core.png)
 
 Представление в слое Data Mart:
