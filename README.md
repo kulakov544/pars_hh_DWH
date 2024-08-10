@@ -2,6 +2,10 @@
 
 Данный репозиторий является частью проекта по анализу вакансий с hh.ru.  
 Здесь будут размещены данные о строении базы данных.
+Всего таких репозиториев три:
+1. pars_hh_ETL https://github.com/kulakov544/pars_hh_ETL.git
+2. pars_hh_DWH https://github.com/kulakov544/pars_hh_DWH.git
+3. pars_hh_Report https://github.com/kulakov544/pars_hh_report.git
 
 ### Бизнес требование
 Нужно узнать какие навыки требуются на рынке вакансий.
